@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default_layout">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+<!-- layout Content -->
+<body>
+    <header th:replace="~{ header :: header}">
+        헤더
+    </header>
+    <div class="container">
+        <h1>Board View.</h1>
+        <form id="frm" action="/board/view/action" method="post">
+            <input type="hidden" name="id" th:value="${info.id}">
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Title.</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" name="title" th:value="${info.title}">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Content.</label>
+                <textarea class="form-control" rows="5" id="exampleInputPassword1" name="content" th:text="${info.content}"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Writer.</label>
+                <input type="text" class="form-control" id="exampleInputEmail2" name="registerId" th:value="${info.account.nickname}">
+            </div>
+            <div class="clearfix">
+                <div class="float-left">
+                    <button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script th:inline="javascript">
+        function fnViewDelete() {
+            if (confirm("Do you want to delete it?")) {
+                let frm = $("#frm");
+                frm.attr("action","/board/view/delete");
+                frm.submit();
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
+</html>
