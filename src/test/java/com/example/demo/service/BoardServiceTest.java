@@ -18,8 +18,5 @@ class BoardServiceTest {
     void test(){
         repository.findAll().forEach(System.out::println);
 
-        service.findAll(0,5).entrySet().forEach(
-                map -> System.out.println(map.getKey()+":"+map.getValue())
-        );
     }
 }

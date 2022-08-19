@@ -7,6 +7,9 @@ import com.example.demo.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class BoardService {
     public final BoardRepository boardRepository;
@@ -25,11 +29,11 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public HashMap<String, Object> findAll(Integer page, Integer size) {
+    public HashMap<String, Object> findAll(Pageable pageable) {
 
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-        Page<Board> list = boardRepository.findAll(PageRequest.of(page, size));
+        Page<Board> list = boardRepository.findAll(pageable);
 
         resultMap.put("list", list.stream().map(BoardResponseDto::new).collect(Collectors.toList()));
         resultMap.put("paging", list.getPageable());
@@ -53,5 +57,9 @@ public class BoardService {
 
     public void deleteAll(Long[] deleteId){
         boardRepository.deleteBoard(deleteId);
+    }
+    @Transactional(readOnly = true)
+    public Page<BoardResponseDto> searchBoard(Pageable pageable) {
+        return boardRepository.findAll(pageable).map(BoardResponseDto::from);
     }
 }

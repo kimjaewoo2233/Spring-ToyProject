@@ -29,8 +29,9 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Writer.</label>
-            <div type="text" class="form-control"  th:text="${username}">
-        </div>
+            <input type="text" class="form-control" name="account" th:text="${username}" th:value="${username}">
+        </input>
+
         <button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
         <button type="submit" class="btn btn-primary">Submit</button>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

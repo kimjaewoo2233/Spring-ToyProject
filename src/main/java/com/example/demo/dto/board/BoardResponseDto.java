@@ -3,6 +3,7 @@ package com.example.demo.dto.board;
 import com.example.demo.entity.Account;
 import com.example.demo.entity.BaseTimeEntity;
 import com.example.demo.entity.Board;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @ToString
 public class BoardResponseDto {
     private Long id;
@@ -33,6 +35,17 @@ public class BoardResponseDto {
         this.account = entity.getAccount();
         this.createdAt = entity.getCreatedAt();
         this.register = entity.getRegister();
+    }
+    public static BoardResponseDto from(Board entity){
+            return new BoardResponseDto(
+                    entity.getId(),
+                    entity.getTitle(),
+                    entity.getContent(),
+                    entity.getReadCnt(),
+                    entity.getAccount(),
+                    entity.getRegister(),
+                    entity.getCreatedAt()
+            );
     }
 
     public Board toEntity(){

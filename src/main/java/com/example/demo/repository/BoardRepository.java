@@ -3,11 +3,16 @@ package com.example.demo.repository;
 
 import com.example.demo.dto.board.BoardRequestDto;
 import com.example.demo.entity.Board;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public interface BoardRepository extends JpaRepository<Board,Long> {
@@ -39,5 +44,8 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
     @Query(value = DELETE_BOARD, nativeQuery = true)
     public int deleteBoard(@Param("deleteList") Long[] deleteList);
 
+
+    @Query(value = "select b from Board b join fetch b.account where b.id = :id")
+    public Optional<Board> findFetchId(Long id);
 
 }

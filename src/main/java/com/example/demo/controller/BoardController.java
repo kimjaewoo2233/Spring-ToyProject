@@ -1,22 +1,29 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.board.BoardRequestDto;
+import com.example.demo.dto.board.BoardResponseDto;
 import com.example.demo.dto.security.AccountPrincipal;
 import com.example.demo.service.BoardService;
+import com.example.demo.service.PageService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class BoardController{
     private final BoardService boardService;
-
+    private final PageService pageService;
     @GetMapping("/login")
     public String login(){
         return "login";
@@ -25,10 +32,18 @@ public class BoardController{
 
     @GetMapping("/board/list")
     public String getBoardListpage(Model model,
-                                   @RequestParam(required = false,defaultValue = "0")Integer page,
-                                   @RequestParam(required = false,defaultValue = "5")Integer size) throws Exception{
+                                   @PageableDefault(
+                                           size=5,sort = "id",direction = Sort.Direction.DESC
+                                   )Pageable pageable) throws Exception{
+
         try {
-            model.addAttribute("resultMap",boardService.findAll(page,size));
+            Page<BoardResponseDto> boards = boardService.searchBoard(pageable);
+            List<Integer> pageNumbers = pageService.getPagination(pageable.getPageNumber(),boards.getTotalPages());
+
+            model.addAttribute("pagination",pageNumbers);
+            model.addAttribute("element",boards);
+
+
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -58,10 +73,9 @@ public class BoardController{
     @PostMapping("/board/write/action")
     public String boardWriteAction(Model model, BoardRequestDto requestDto) throws Exception {
 
-        log.info("========================",requestDto);
         try {
             Long result = boardService.save(requestDto);
-
+            log.info("================={}",requestDto);
             if (result < 0) {
                 throw new Exception("#Exception boardWriteAction!");
             }
